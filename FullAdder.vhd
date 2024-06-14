@@ -1,0 +1,21 @@
+LIBRARY IEEE;
+
+USE IEEE.STD_LOGIC_1164.ALL;
+
+ENTITY FullAdder IS
+
+    PORT ( 
+           CIN, X1, X2 : IN STD_LOGIC;
+           S, COUT : OUT STD_LOGIC 
+         );
+			
+END FullAdder;
+
+ARCHITECTURE LOGIC OF FullAdder IS
+
+BEGIN
+
+    S <= X1 XOR X2 XOR CIN;
+    COUT <= (X1 AND X2) OR (X1 AND CIN) OR (X2 AND CIN);
+	 
+END LOGIC;
