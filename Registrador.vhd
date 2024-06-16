@@ -7,6 +7,7 @@ ENTITY REGISTRADOR IS
 
     PORT ( 
            CLK, LOAD : IN STD_LOGIC;
+			  RESET : in STD_LOGIC;
            D : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
            Q : OUT STD_LOGIC_VECTOR (3 DOWNTO 0) 
          );
@@ -18,13 +19,20 @@ ARCHITECTURE BEHAVIORAL OF REGISTRADOR IS
 BEGIN
 
     PROCESS (CLK)
+	 
     BEGIN
 	 
-        IF RISING_EDGE(CLK) THEN
+		IF RESET = '1' then
+            Q <= (OTHERS => '0');
+				
+        ELSIF RISING_EDGE(CLK) THEN
+		  
             IF LOAD = '1' THEN
                 Q <= D;
             END IF;
+				
         END IF;
+		  
     END PROCESS;
 
 END BEHAVIORAL;

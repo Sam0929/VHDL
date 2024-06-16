@@ -12,7 +12,8 @@ ENTITY UnidadeDeControle IS
            LOAD_R3 : OUT STD_LOGIC;
 			  LOAD_A  : OUT STD_LOGIC;
 			  LOAD_G  : OUT STD_LOGIC;
-           ADD_SUB : OUT STD_LOGIC
+           ADD_SUB : OUT STD_LOGIC;
+			  SWAP_START : OUT STD_LOGIC
          );
 			
 END UnidadeDeControle;
@@ -58,7 +59,8 @@ BEGIN
                         STATE <= S4;
 								
                     WHEN "011" =>        -- SWAP
-                        LOAD_R3 <= '1';
+						  
+                        SWAP_START <= '1';
                         STATE <= S3;
 								
                     WHEN "101" =>        -- LOAD R1
@@ -88,7 +90,7 @@ BEGIN
 					 
             WHEN S3 =>
 				
-                LOAD_R3 <= '0';
+                SWAP_START <= '0';
                 STATE <= IDLE;
 					 
             WHEN S4 =>

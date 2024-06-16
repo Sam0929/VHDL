@@ -2,7 +2,7 @@ LIBRARY ieee;
 
 USE ieee.std_logic_1164.all;
 
-ENTITY Somador IS
+ENTITY SOMADOR IS
 
 PORT ( 
 		
@@ -13,9 +13,9 @@ PORT (
 		
 		);
 			
-END Somador;
+END SOMADOR;
 
-ARCHITECTURE Behavioral OF Somador IS
+ARCHITECTURE logic OF SOMADOR IS
 
 SIGNAL C : STD_LOGIC_VECTOR(1 TO 3);
 
@@ -34,4 +34,4 @@ BEGIN
 	stage2: FullAdder PORT MAP ( C(2), X(2), Y(2), S(2), C(3) );
 	stage3: FullAdder PORT MAP ( C(3), X(3), Y(3), S(3), Cout );
 	
-END Bahavioral;
+END logic;

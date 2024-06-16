@@ -1,50 +1,72 @@
-LIBRARY IEEE;
-USE IEEE.STD_LOGIC_1164.ALL;
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+USE ieee.std_logic_arith.ALL;
+USE ieee.std_logic_unsigned.ALL;
 
-ENTITY Ula IS
+ENTITY ULA IS
+PORT (
+    A, B: IN STD_LOGIC_VECTOR(3 DOWNTO 0); -- Entradas de 4 bits
+    ADD_SUB: IN STD_LOGIC; -- Código de operação
+    F: OUT STD_LOGIC_VECTOR(3 DOWNTO 0); -- Resultado da operação
+	 CARRY_OUT: OUT STD_LOGIC
+);
+END ULA;
 
-    PORT ( 
-           A : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
-           B : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
-           ADD_SUB : IN STD_LOGIC;  -- '1' PARA SUBTRAÇÃO, '0' PARA ADIÇÃO
-           RESULT : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
-           COUT : OUT STD_LOGIC
-         );
-			
-END Ula;
+ARCHITECTURE logic OF ULA IS
 
-ARCHITECTURE BEHAVIORAL OF Ula IS
+    -- Componentes definidos separadamente
+   
+    COMPONENT SOMADOR
+    PORT (
+        Cin: IN STD_LOGIC;
+        X, Y: IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+        S: OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+        Cout: OUT STD_LOGIC
+    );
+    END COMPONENT;
 
-    SIGNAL B_XOR : STD_LOGIC_VECTOR (3 DOWNTO 0);
-    SIGNAL CARRY : STD_LOGIC_VECTOR (3 DOWNTO 0);
+    COMPONENT SUBTRATOR
+    PORT (
+        X, Y: IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+        D: OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+        COUT: OUT STD_LOGIC
+    );
+    END COMPONENT;
 	 
-COMPONENT FullAdder IS
-
-    PORT ( 
-           CIN, X1, X2 : IN STD_LOGIC;
-           S, COUT : OUT STD_LOGIC 
-         );
-			
-END COMPONENT FullAdder;
+	 signal SOMADORr, SUBTRATORr: STD_LOGIC_VECTOR (3 downto 0);
 	 
+
 BEGIN
-
-   PROCESS (B, ADD_SUB)
-		BEGIN
+    
+	 
 		
-        FOR i IN 0 TO 3 LOOP
-		  
-            B_XOR(i) <= B(i) XOR ADD_SUB;
+		U1: SOMADOR PORT MAP ('0', A, B, SOMADORr, CARRY_OUT); 
+		
+		U2: SUBTRATOR PORT MAP (A, B, SUBTRATORr, CARRY_OUT); 
+
+	 
+    PROCESS(ADD_SUB, SOMADORr, SUBTRATORr)
+	 
+    BEGIN
+	 
+        CASE ADD_SUB IS
+		 
+
+            WHEN '0' => -- SOMA
 				
-        END LOOP;
+					 F <= SOMADORr;
+
+            WHEN '1' => -- SUBTRAÇÃO
+						
+					 F <= SUBTRATORr;
+
+            WHEN OTHERS =>
+				
+                F <= (OTHERS => '0'); -- Resultado padrão
+					 
+        END CASE;
 		  
     END PROCESS;
 	 
-    CARRY(0) <= ADD_SUB;
+END logic;
 
-    FA0: FullAdder PORT MAP(A(0), B_XOR(0), CARRY(0), RESULT(0), CARRY(1));
-    FA1: FullAdder PORT MAP(A(1), B_XOR(1), CARRY(1), RESULT(1), CARRY(2));
-    FA2: FullAdder PORT MAP(A(2), B_XOR(2), CARRY(2), RESULT(2), CARRY(3));
-    FA3: FullAdder PORT MAP(A(3), B_XOR(3), CARRY(3), RESULT(3), COUT);
-	 
-END BEHAVIORAL;
